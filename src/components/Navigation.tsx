@@ -1,15 +1,21 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Calendar, Search, User, Settings } from "lucide-react";
+import { Menu, X, Calendar, Bell, BarChart3, Brain, Globe, Settings } from "lucide-react";
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import eventRadarLogo from "@/assets/eventradaar-logo.png";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
 
   const navItems = [
-    { label: "Events", href: "#events", icon: Search },
-    { label: "Calendar", href: "#calendar", icon: Calendar },
-    { label: "Dashboard", href: "#dashboard", icon: User },
+    { name: "Home", path: "/", icon: null },
+    { name: "Calendar", path: "/calendar", icon: Calendar },
+    { name: "Notifications", path: "/notifications", icon: Bell },
+    { name: "Analytics", path: "/analytics", icon: BarChart3 },
+    { name: "AI Recommendations", path: "/recommendations", icon: Brain },
+    { name: "Global Reach", path: "/global", icon: Globe },
+    { name: "Admin Portal", path: "/admin", icon: Settings }
   ];
 
   return (
@@ -17,78 +23,85 @@ const Navigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-3">
+          <Link to="/" className="flex items-center space-x-3">
             <img src={eventRadarLogo} alt="EventRadar" className="w-8 h-8" />
             <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
               EventRadar
             </span>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex space-x-6">
             {navItems.map((item) => {
-              const IconComponent = item.icon;
+              const isActive = location.pathname === item.path;
               return (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className="flex items-center space-x-1 text-foreground hover:text-primary transition-colors"
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className={`flex items-center gap-1 px-3 py-2 rounded-md transition-colors ${
+                    isActive 
+                      ? "bg-primary/10 text-primary font-medium" 
+                      : "text-foreground/80 hover:text-foreground hover:bg-muted/50"
+                  }`}
                 >
-                  <IconComponent className="w-4 h-4" />
-                  <span>{item.label}</span>
-                </a>
+                  {item.icon && <item.icon className="h-4 w-4" />}
+                  {item.name}
+                </Link>
               );
             })}
-          </div>
+          </nav>
 
-          {/* Desktop CTA */}
+          {/* Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost">Sign In</Button>
+            <Link to="/signin">
+              <Button variant="outline">Sign In</Button>
+            </Link>
             <Button variant="gradient">Get Started</Button>
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </Button>
-          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </Button>
         </div>
-
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden py-4 border-t">
-            <div className="flex flex-col space-y-4">
-              {navItems.map((item) => {
-                const IconComponent = item.icon;
-                return (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    className="flex items-center space-x-2 text-foreground hover:text-primary transition-colors"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <IconComponent className="w-4 h-4" />
-                    <span>{item.label}</span>
-                  </a>
-                );
-              })}
-              <div className="flex flex-col space-y-2 pt-4 border-t">
-                <Button variant="ghost" className="justify-start">
-                  Sign In
-                </Button>
-                <Button variant="gradient" className="justify-start">
-                  Get Started
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden absolute top-16 left-0 right-0 bg-background border-b shadow-lg z-50">
+          <nav className="flex flex-col space-y-2 p-4">
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${
+                    isActive 
+                      ? "bg-primary/10 text-primary font-medium" 
+                      : "text-foreground/80 hover:text-foreground hover:bg-muted/50"
+                  }`}
+                >
+                  {item.icon && <item.icon className="h-4 w-4" />}
+                  {item.name}
+                </Link>
+              );
+            })}
+            <div className="flex flex-col space-y-2 pt-4 border-t">
+              <Link to="/signin" onClick={() => setIsMenuOpen(false)}>
+                <Button variant="outline" className="w-full">Sign In</Button>
+              </Link>
+              <Button variant="gradient" className="w-full">Get Started</Button>
+            </div>
+          </nav>
+        </div>
+      )}
     </nav>
   );
 };
