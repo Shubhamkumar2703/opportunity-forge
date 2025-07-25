@@ -98,8 +98,8 @@ const EventFeed = () => {
     const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          event.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesType = !selectedType || event.type === selectedType;
-    const matchesMode = !selectedMode || event.mode === selectedMode;
+    const matchesType = !selectedType || selectedType === "all" || event.type === selectedType;
+    const matchesMode = !selectedMode || selectedMode === "all" || event.mode === selectedMode;
     
     return matchesSearch && matchesType && matchesMode;
   });
@@ -137,7 +137,7 @@ const EventFeed = () => {
                 <SelectValue placeholder="Event Type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Types</SelectItem>
+                <SelectItem value="all">All Types</SelectItem>
                 {eventTypes.map(type => (
                   <SelectItem key={type} value={type}>{type}</SelectItem>
                 ))}
@@ -150,7 +150,7 @@ const EventFeed = () => {
                 <SelectValue placeholder="Mode" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Modes</SelectItem>
+                <SelectItem value="all">All Modes</SelectItem>
                 {eventModes.map(mode => (
                   <SelectItem key={mode} value={mode}>
                     {mode.charAt(0).toUpperCase() + mode.slice(1)}
@@ -167,13 +167,13 @@ const EventFeed = () => {
 
           {/* Active Filters */}
           <div className="flex flex-wrap gap-2 mt-4">
-            {selectedType && (
+            {selectedType && selectedType !== "all" && (
               <Badge variant="secondary" className="flex items-center space-x-1">
                 <span>{selectedType}</span>
                 <button onClick={() => setSelectedType("")} className="ml-1">×</button>
               </Badge>
             )}
-            {selectedMode && (
+            {selectedMode && selectedMode !== "all" && (
               <Badge variant="secondary" className="flex items-center space-x-1">
                 <span>{selectedMode}</span>
                 <button onClick={() => setSelectedMode("")} className="ml-1">×</button>
