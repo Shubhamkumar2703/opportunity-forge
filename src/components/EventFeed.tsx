@@ -8,8 +8,8 @@ import { Search, Filter, SlidersHorizontal, Calendar, MapPin } from "lucide-reac
 
 const EventFeed = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedType, setSelectedType] = useState("");
-  const [selectedMode, setSelectedMode] = useState("");
+  const [selectedType, setSelectedType] = useState("all");
+  const [selectedMode, setSelectedMode] = useState("all");
 
   const mockEvents = [
     {
@@ -170,13 +170,13 @@ const EventFeed = () => {
             {selectedType && selectedType !== "all" && (
               <Badge variant="secondary" className="flex items-center space-x-1">
                 <span>{selectedType}</span>
-                <button onClick={() => setSelectedType("")} className="ml-1">×</button>
+                <button onClick={() => setSelectedType("all")} className="ml-1">×</button>
               </Badge>
             )}
             {selectedMode && selectedMode !== "all" && (
               <Badge variant="secondary" className="flex items-center space-x-1">
                 <span>{selectedMode}</span>
-                <button onClick={() => setSelectedMode("")} className="ml-1">×</button>
+                <button onClick={() => setSelectedMode("all")} className="ml-1">×</button>
               </Badge>
             )}
           </div>
